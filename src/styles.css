@@ -26,7 +26,8 @@ html, body, #root{
 #mainContainer{
   height: 50%;
   min-height: 500px;
-  min-width: 400px;
+  width: 30%;
+  min-width: 300px;
   aspect-ratio: 1 / 2;
 
   background-color: black;
@@ -90,15 +91,23 @@ html, body, #root{
 }
 
 #passwordVisibilityChange{
+  height: 1em;
+
+  aspect-ratio: 1.7/1;
+  
   position: fixed;
   position-anchor: --password-anchor;
   position-area: right;
 
   transform: translateX(calc(-1 * (100% + 5px)));
-
-  background-color: black;
+  filter: invert(1);
 
   border: none;
+}
+
+#passwordVisibilityChange > img{
+  height: 100%;
+  width: 100%;
 }
 
 #submit{
