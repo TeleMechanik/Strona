@@ -2,11 +2,11 @@
 import mysql from 'mysql2/promise';
 
 const dbConfig = {
-  host: 'se01.creperus.top',
+  host: 'host',
   port: 10211,
-  user: 'root_telebim',
-  password: 'telebim_123',
-  database: 'telebim_baza',
+  user: 'login',
+  password: 'haslo',
+  database: 'baza',
   dateStrings: true
 };
 
