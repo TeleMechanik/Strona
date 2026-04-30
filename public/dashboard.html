@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pl" id="htmlLang">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeleMechanik Dashboard</title>
+    <link rel="icon" href="obrazy/logo.png">
+    <link rel="stylesheet" type="text/css" media="screen" href="dashboard.css">
+</head>
+<body class="dashboard">
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1>TeleMechanik Dashboard</h1>
+      <p id="dashboardSubtitle">Witaj x (not loaded)</p>
+      
+<div id="impersonationBanner" style="display: none; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 12px 20px; border-radius: 10px; margin-top: 20px; text-align: left; border-left: 5px solid #b45309;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <strong style="font-size: 16px;" id="impersonatingLabel">👁️ PODGLĄD</strong>
+      <div style="font-size: 14px; margin-top: 5px;">
+        <span id="currentlyViewingText">Przeglądasz:</span> <span id="bannerImpersonatedUser">-</span>
+        <br>
+        <small><span id="loggedAsRootText">Zalogowany jako root:</span> <span id="bannerRootUser">-</span></small>
+      </div>
+    </div>
+    <button id="exitImpersonateBannerBtn" style="background: white; color: #d97706; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;">
+      🏠 <span id="returnToRootText">Wróć do konta root</span>
+    </button>
+  </div>
+</div>
+        
+    </header>
+
+<div class="tiles-container">
+
+<div class="tile">
+  <div class="tile-icon">💻</div>
+  <h3>Grupy</h3>
+  <p>Aktywne: <span class="status-active" id="groupsCount">0</span></p>
+  <div class="tile-actions">
+    <a href="#" class="tile-btn" id="openGroupsBtn">Zarządzaj</a>
+    <button class="refresh-btn" id="refreshGroupsBtn" title="Odśwież">⟳</button>
+  </div>
+</div>
+    
+<div class="tile">
+  <div class="tile-icon">🔒</div>
+  <h3>Urządzenia</h3>
+  <p>Aktywne: <span class="status-active" id="connectedCount">0/0</span></p>
+  <div class="tile-actions">
+    <a href="#" class="tile-btn" id="openBillboardsModal" onclick="window.loadBillboards(); return false;">Zarządzaj</a>
+    <button class="refresh-btn" id="refreshBillboardsBtn" title="Odśwież">⟳</button>
+  </div>
+</div>
+
+  <div class="tile">
+    <div class="tile-icon">📅</div>
+    <h3>Zadania</h3>
+    <p>Zaplanuj wyświetlanie treści na urządzeniach</p>
+    <a href="#" class="tile-btn" id="openScheduleBtn">Zarządzaj</a>
+  </div>
+    
+     <div class="tile">
+    <div class="tile-icon">👥</div>
+    <h3>Użytkownicy</h3>
+    <p>Tutaj znajdziesz wszystkich użytkowników panelu</p>
+    <a href="#" class="tile-btn" id="openUsersBtn">Zarządzaj</a>
+  </div>
+    
+    <div class="tile" id="impersonateTile" style="display: none;">
+  <div class="tile-icon">👁️</div>
+  <h3 id="impersonateTitle">Podgląd Konta</h3>
+  <p id="impersonateDesc">Podglądaj konta innych użytkowników</p>
+  <a href="#" class="tile-btn" id="openImpersonateBtn">Zarządzaj</a>
+</div>
+    
+  <div class="tile" id="companiesTile" style="display: none;">
+    <div class="tile-icon">🏢</div>
+    <h3 id="companiesTitle">Firmy</h3>
+    <p id="companiesDesc">Zarządzaj firmami użytkowników</p>
+    <a href="#" class="tile-btn" id="openCompaniesBtn">Zarządzaj</a>
+  </div>
+    
+<div class="tile">
+  <div class="tile-icon">📖</div>
+  <h3>Instrukcja</h3>
+  <p>Przewodnik użytkownika i dokumentacja</p>
+  <a href="#" class="tile-btn" id="openInstructionsBtn">Otwórz</a>
+</div>
+    
+</div>
+
+<div class="dashboard-footer">
+  <button id="logout" class="logout-btn">Wyloguj się</button>
+</div>
+
+  </div>
+
+  <div class="settings-btn" id="openSettings">
+    <img src="./obrazy/settings.png" alt="Ustawienia">
+  </div>
+
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <h3 id="settingsTitle">Ustawienia</h3>
+
+  <label id="langLabel">Język</label>
+  <select id="languageSwitcher">
+    <option value="pl">Polski</option>
+    <option value="en">English</option>
+  </select>
+
+  <label id="themeLabel" style="margin-top:15px;">Motyw</label>
+  <select id="themeSwitcher">
+    <option value="light">Jasny</option>
+    <option value="dark">Ciemny</option>
+  </select>
+
+  <button class="close-modal" id="closeSettings">Zamknij</button>
+</div>
+
+  </div>
+
+<div class="modal-overlay" id="billboardsModal">
+  <div class="big-modal-container">
+    <h2 style="margin-bottom: 20px;">Lista urządzeń</h2>
+      
+    <p style="margin-bottom: 15px; font-size: 18px;">
+      Połączonych urządzeń: <b id="connectedCount">0</b>
+    </p>
+      
+      
+<div id="deployTokenContainer" style="margin-bottom: 20px; display: none; text-align: center;">
+  <button id="showDeployTokenBtn" class="tile-btn" style="background-color: #8b5cf6; margin: 0 auto; display: block;"></button>
+  <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px; text-align: center;"></p>
+</div>
+      
+    <div class="big-modal-list" id="billboardsList">
+      Ładowanie...
+    </div>
+
+    <button class="close-big-modal" id="closeBillboardsModal">Zamknij</button>
+  </div>
+</div>
+
+    <div class="modal-overlay" id="deployTokenModal" style="display: none; align-items: center; justify-content: center;">
+  <div class="modal">
+    <h3 id="deployTokenTitle"></h3>
+    
+    <div id="deployTokenStep1">
+      <p style="margin-bottom: 15px; color: var(--text-secondary);"></p>
+      <input type="password" id="deployTokenPassword" class="modal-input" placeholder="" autocomplete="current-password">
+      
+      <div class="modal-btn-container" style="margin-top: 20px;">
+        <button id="generateTokenBtn" class="modal-btn save-btn"></button>
+        <button id="cancelDeployTokenBtn" class="modal-btn cancel-btn"></button>
+      </div>
+    </div>
+    
+    <div id="deployTokenStep2" style="display: none; text-align: center;">
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 48px; margin-bottom: 10px; color: var(--success);">✅</div>
+        <h4 style="margin-bottom: 10px; color: var(--text);"></h4>
+        <p style="color: var(--text-secondary); margin-bottom: 15px;"></p>
+        
+        <div style="position: relative;">
+          <input type="text" id="generatedToken" class="modal-input" readonly 
+                 style="font-family: monospace; font-size: 14px; text-align: center; padding-right: 40px;">
+          <button id="copyTokenBtn" class="tile-btn" style="position: absolute; right: 5px; top: 5px; padding: 5px 10px; font-size: 12px;"></button>
+        </div>
+        
+        <p style="color: var(--danger); font-size: 12px; margin-top: 10px;"></p>
+      </div>
+      
+      <div class="modal-btn-container">
+        <button id="closeDeployTokenModal" class="modal-btn" style="background-color: var(--primary); color: white;"></button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+<div class="modal-overlay" id="usersModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="big-modal-container">
+    <h2 style="margin-bottom: 20px;">Lista Użytkowników</h2>
+
+    <p style="margin-bottom: 15px; font-size: 18px;">
+      Użytkowników w bazie: <b id="connectedUsersCount">0</b>
+    </p>
+
+    <div class="big-modal-list" id="usersList">Ładowanie...</div>
+
+    <button class="close-big-modal" id="closeUsersModal">Zamknij</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="groupsModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="big-modal-container">
+    <h2 style="margin-bottom: 20px;">Lista Grup</h2>
+
+    <p style="margin-bottom: 15px; font-size: 18px;">
+      Grup w bazie: <b id="connectedGroupsCount">0</b>
+    </p>
+
+    <div class="big-modal-list" id="groupsList">Ładowanie...</div>
+
+    <button class="close-big-modal" id="closeGroupsModal">Zamknij</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="userActionsModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="modal">
+    <h3 id="actionUsername">Akcje dla:</h3>
+    <button id="changePasswordBtn" class="tile-btn" style="margin-bottom:10px;">Zmień hasło</button>
+    <button id="renameUserBtn" class="tile-btn" style="margin-bottom: 10px; background-color: #f59e0b;">Zmień nazwę</button>
+    <button id="changeRoleBtn" class="tile-btn" style="margin-bottom: 10px; background-color: #8b5cf6;">Zmień rangę</button>
+    <button id="changeGroupBtn" class="tile-btn" style="margin-bottom:10px; background-color:#10b981;">Przenieś do grupy</button>
+    <button id="changeCompanyBtn" class="tile-btn" style="margin-bottom:10px; background-color:#8a8a34;">Zmień firmę</button>
+    <button id="deleteUserBtn" class="tile-btn" style="background-color:#ef4444;">Usuń użytkownika</button>
+    <button class="close-modal" id="closeUserActions">Zamknij</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="groupActionsModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="modal">
+    <h3 id="actionGroupname">Akcje dla grupy:</h3>
+    <button id="renameGroupBtn" class="tile-btn" style="margin-bottom:10px;">Zmień nazwę</button>
+    <button id="deleteGroupBtn" class="tile-btn" style="background-color:#ef4444;">Usuń grupę</button>
+    <button class="close-modal" id="closeGroupActions">Zamknij</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="billboardActionsModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="modal">
+    <h3 id="actionBillboardname">Akcje dla urządzenia:</h3>
+    <button id="renameBillboardBtn" class="tile-btn" style="margin-bottom:10px;">Zmień nazwę</button>
+<button id="changeBillboardGroupBtn" class="tile-btn" style="margin-bottom:10px; background-color:#10b981; display:none;"></button>
+    <button id="deleteBillboardBtn" class="tile-btn" style="background-color:#ef4444;">Usuń urządzenie</button>
+    <button class="close-modal" id="closeBillboardActions">Zamknij</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="scheduleModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="big-modal-container">
+    <h2 style="margin-bottom: 20px;">Zadania Urządzeń</h2>
+    
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <select id="scheduleBillboardSelect" class="modal-select" style="flex: 1;">
+        <option value="">Wybierz urządzenie</option>
+      </select>
+      <button id="addScheduleBtn" class="tile-btn" style="white-space: nowrap;">+ Dodaj wpis</button>
+      <button id="visualizeBtn" class="tile-btn" style="white-space: nowrap; background-color: #8b5cf6; display: none;">📊 Wizualizacja wpisów</button>
+    </div>
+
+    <div class="big-modal-list" id="scheduleList">
+      <p>Wybierz urządzenie aby zobaczyć zadania</p>
+    </div>
+
+    <button class="close-big-modal" id="closeScheduleModal">Zamknij</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="visualizationModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="big-modal-container">
+    <h2 style="margin-bottom: 20px;">Wizualizacja Zadań</h2>
+    
+    <div style="margin-bottom: 15px; text-align: center;">
+      <p style="font-size: 18px;">
+        Urządzenie: <b id="visualizationBillboardName">-</b>
+      </p>
+    </div>
+
+    <div class="calendar-container" id="calendarContainer">
+    </div>
+
+    <button class="close-big-modal" id="closeVisualizationModal">Zamknij</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="scheduleEditModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+</div>
+
+<div class="modal-overlay" id="impersonateModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="big-modal-container">
+    <h2 style="margin-bottom: 20px;" id="impersonateModalTitle">Podgląd Konta</h2>
+    
+    <div class="impersonate-tabs" style="display: flex; border-bottom: 2px solid var(--border); margin-bottom: 20px; background: var(--bg-secondary); border-radius: 8px 8px 0 0; overflow: hidden;">
+      <button id="impersonateTabCompanies" class="impersonate-tab active" style="flex: 1; padding: 14px 20px; text-align: center; font-weight: 600; font-size: 15px; color: var(--primary); background: var(--bg-primary); border: none; cursor: pointer; transition: all 0.2s ease; position: relative; border-bottom: 3px solid var(--primary);">
+        <span>🏢</span> Firmy
+      </button>
+      <button id="impersonateTabUsers" class="impersonate-tab" style="flex: 1; padding: 14px 20px; text-align: center; font-weight: 600; font-size: 15px; color: var(--text-secondary); background: transparent; border: none; cursor: pointer; transition: all 0.2s ease; position: relative;">
+        <span>👥</span> Użytkownicy
+      </button>
+    </div>
+    
+    <div id="impersonateInfo" style="margin-bottom: 20px; display: none;">
+      <div style="background: var(--primary); color: white; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+        <h3 style="margin-top: 0; color: white;">⚠️ AKTYWNY PODGLĄD KONTA</h3>
+        <p style="margin-bottom: 10px;">
+          <strong>Obecnie przeglądasz:</strong> <span id="currentImpersonatedUser">-</span>
+        </p>
+        <p style="margin-bottom: 0;">
+          <strong>Zalogowany jako root:</strong> <span id="currentRootUser">-</span>
+        </p>
+      </div>
+      <button id="exitImpersonateBtn" class="tile-btn" style="background-color: #f59e0b; width: 100%;">
+        🏠 Wróć do konta root
+      </button>
+      <hr style="margin: 20px 0; border-color: var(--border);">
+    </div>
+
+    <div id="impersonateHelpCompanies" style="margin-bottom: 15px; font-size: 16px; color: var(--text-secondary); display: block;">
+      Wybierz firmę do podglądu. Będziesz miał widok jak Owner, ale zachowasz uprawnienia ROOT (możesz nawet usuwać ownerów).
+    </div>
+    
+    <div id="impersonateHelpUsers" style="margin-bottom: 15px; font-size: 16px; color: var(--text-secondary); display: none;">
+      Wybierz użytkownika, którego konto chcesz podglądnąć. Będziesz miał pełny dostęp do jego uprawnień.
+    </div>
+    
+    <div class="big-modal-list" id="impersonateCompanyList" style="max-height: 400px; overflow-y: auto; display: block;">
+      <p style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+        Ładowanie listy firm...
+      </p>
+    </div>
+
+    <div class="big-modal-list" id="impersonateUserList" style="max-height: 400px; overflow-y: auto; display: none;">
+      <p style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+        Ładowanie listy użytkowników...
+      </p>
+    </div>
+
+    <button class="close-big-modal" id="closeImpersonateModal">Zamknij</button>
+  </div>
+</div>
+    
+<div class="modal-overlay" id="companiesModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="big-modal-container">
+    <h2 style="margin-bottom: 20px;" id="companiesModalTitle">Lista Firm</h2>
+
+    <p style="margin-bottom: 15px; font-size: 18px;">
+      <span id="companiesConnectedText">Firm w bazie: <b id="connectedCompaniesCount">0</b></span>
+    </p>
+
+    <div class="big-modal-list" id="companiesList">Ładowanie...</div>
+
+    <button class="close-big-modal" id="closeCompaniesModal">Zamknij</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="companyActionsModal" style="align-items:center; justify-content:center; padding-bottom:0;">
+  <div class="modal">
+    <h3 id="actionCompanyname">Akcje dla firmy:</h3>
+    <button id="renameCompanyBtn" class="tile-btn" style="margin-bottom:10px;">Zmień nazwę</button>
+    <button id="deleteCompanyBtn" class="tile-btn" style="background-color:#ef4444;">Usuń firmę</button>
+    <button class="close-modal" id="closeCompanyActions">Zamknij</button>
+  </div>
+</div>
+    
+<script src="js/rest.js"></script>
+<script src="js/billboards.js"></script>
+<script src="js/users.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/schedule.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/impersonate.js"></script>
+<script src="js/company.js"></script>
+<script src="js/instructions.js"></script>  
+</body>
+</html>

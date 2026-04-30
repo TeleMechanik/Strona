@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+        <link rel="icon" href="obrazy/logo.png">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-gradient: linear-gradient(135deg, #2563eb, #1e40af);
+  --panel-bg: white;
+  --text-color: #333;
+  --input-bg: white;
+  --input-border: #ccc;
+  --icon-filter: invert(0);
+  --caps-warning: #f59e0b;
+  --caps-warning-bg: #fef3c7;
+}
+
+body.dark {
+  --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+  --panel-bg: #1e293b;
+  --text-color: #e2e8f0;
+  --input-bg: #0f172a;
+  --input-border: #475569;
+  --icon-filter: invert(1);
+  --caps-warning: #fbbf24;
+  --caps-warning-bg: #78350f;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: var(--text-color);
+  transition: 0.4s;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  background: var(--panel-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  transition: 0.4s;
+}
+
+.left-panel, .right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.right-panel {
+  background: #f5f5f5;
+}
+
+body.dark .right-panel {
+  background: #111827;
+}
+
+.right-panel img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+h2, h3 {
+  color: #1d4ed8;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.input-wrapper img {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  filter: var(--icon-filter);
+  transition: 0.3s;
+}
+
+input.username, input.password {
+  width: 100%;
+  padding: 14px 15px 14px 50px;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  font-size: 16px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  transition: all 0.3s;
+}
+
+input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59,130,246,0.4);
+  outline: none;
+}
+
+    input.password {
+  width: 100%;
+  padding: 14px 50px 14px 50px;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  font-size: 16px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  transition: all 0.3s;
+}
+    
+.input-wrapper .toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  left: auto;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  filter: var(--icon-filter);
+  transition: 0.3s;
+}
+
+.input-wrapper .toggle-password:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+    
+button {
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  color: white;
+  font-weight: bold;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 100%;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+#error, #message {
+  text-align: center;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+#error { color: #e74c3c; }
+#message { color: #27ae60; }
+
+@media (max-width: 768px) {
+  body { padding: 10px; align-items: center; min-height: 100vh; }
+
+  .container { flex-direction: column; width: 95%; max-width: 420px; min-height: auto; margin: 0 auto; }
+  .right-panel { display: none; }
+
+  .left-panel { padding: 40px 30px; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+  h2, h3 { font-size: 24px; margin-bottom: 25px; text-align: center; }
+
+  .input-wrapper { width: 100%; max-width: 320px; }
+  .input-wrapper img { left: 15px; width: 20px; height: 20px; }
+  input.username, input.password { width: 100%; font-size: 16px; padding: 15px 15px 15px 50px; }
+  button { width: 100%; max-width: 320px; padding: 15px; font-size: 16px; margin-top: 10px; }
+    
+     input.password {
+    padding: 15px 45px 15px 45px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .container { width: 98%; max-width: 340px; }
+  .left-panel { padding: 30px 20px; }
+  h2, h3 { font-size: 22px; }
+  .input-wrapper { max-width: 280px; }
+  input.username, input.password { font-size: 15px; padding: 13px 13px 13px 45px; }
+  .input-wrapper img { width: 18px; height: 18px; left: 12px; }
+  button { max-width: 280px; padding: 13px; font-size: 15px; }
+      input.password {
+    padding: 13px 40px 13px 40px;
+    font-size: 15px;
+  }
+}
+
+.settings-btn {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 55px;
+  height: 55px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(6px);
+  transition: 0.3s;
+}
+
+body.dark .settings-btn { background: rgba(40,40,40,0.85); }
+.settings-btn:hover { transform: rotate(20deg) scale(1.07); }
+.settings-btn img { width: 28px; height: 28px; filter: var(--icon-filter); }
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 80px;
+  z-index: 1000;
+}
+
+.modal {
+  width: min(90%, 320px);
+ background: var(--panel-bg);
+  color: var(--text-color);
+  border-radius: 16px;
+  padding: clamp(16px, 4vw, 25px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  animation: slideUp 0.25s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal select {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-color);
+}
+
+.modal h3 { margin-bottom: 10px; text-align: center; }
+.close-modal {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="left-panel">
+    <h2 id="title">Logowanie TeleMechanik</h2>
+
+    <form id="loginForm" style="display:none;">
+      <div class="input-wrapper">
+        <img id="loginIcon" 
+             src="./obrazy/loginludzik.png" 
+             alt="login icon"
+             data-light="./obrazy/loginludzik.png"
+             data-dark="./obrazy/loginludzik.png">
+        <input type="text" name="username" id="loginPlaceholder" class="username" placeholder="Login" required>
+      </div>
+      <div class="input-wrapper">
+        <img id="passwordIcon" 
+             src="./obrazy/kludka.png" 
+             alt="password icon"
+             data-light="./obrazy/kludka.png"
+             data-dark="./obrazy/kludka.png">
+        <input type="password" name="password" id="passwordPlaceholder" class="password" placeholder="Hasło" required>
+            <img src="./obrazy/eye.png" class="toggle-password" alt="Pokaż hasło">
+      </div>
+      <button type="submit" id="loginButton">Zaloguj</button>
+    </form>
+
+    <form id="setupForm" style="display:none;">
+      <h3 id="setupTitle">Utwórz pierwszego admina</h3>
+      <div class="input-wrapper">
+        <img id="setupLoginIcon" 
+             src="./obrazy/loginludzik.png" 
+             alt="login icon setup"
+             data-light="./obrazy/loginludzik.png"
+             data-dark="./obrazy/loginludzik.png">
+        <input type="text" name="username" class="username" id="setupLoginPlaceholder" placeholder="Login admina" required>
+      </div>
+      <div class="input-wrapper">
+        <img id="setupPasswordIcon" 
+             src="./obrazy/kludka.png" 
+             alt="password icon setup"
+             data-light="./obrazy/kludka.png"
+             data-dark="./obrazy/kludka.png">
+        <input type="password" name="password" class="password" id="setupPasswordPlaceholder" placeholder="Hasło admina" required>
+            <img src="./obrazy/eye.png" class="toggle-password" alt="Pokaż hasło">
+      </div>
+      <button type="submit" id="setupButton">Utwórz admina</button>
+    </form>
+
+    <p id="error"></p>
+    <p id="message"></p>
+  </div>
+
+  <div class="right-panel">
+    <img id="mainImage" 
+         src="./obrazy/telemechaniklogo_light.png" 
+         alt="telemechaniklogo"
+         data-light="./obrazy/telemechaniklogo_light.png"
+         data-dark="./obrazy/telemechaniklogo_dark.png">
+  </div>
+</div>
+
+<div class="settings-btn" id="openSettings">
+  <img src="./obrazy/settings.png">
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <h3 id="settingsTitle">Ustawienia</h3>
+
+    <label id="langLabel">Język</label>
+    <select id="languageSwitcher">
+      <option value="pl">Polski</option>
+      <option value="en">English</option>
+    </select>
+
+    <label id="themeLabel" style="margin-top:15px;">Motyw</label>
+    <select id="themeSwitcher">
+      <option value="light">Jasny</option>
+      <option value="dark">Ciemny</option>
+    </select>
+
+    <button class="close-modal" id="closeSettings">Zamknij</button>
+  </div>
+</div>
+
+<script>
+function setCookie(name,value,days=365) {
+  const d = new Date();
+  d.setTime(d.getTime() + (days*24*60*60*1000));
+  document.cookie = `${name}=${value};path=/;expires=${d.toUTCString()}`;
+}
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));
+  if (match) return match[2];
+  return null;
+}
+
+const modal = document.getElementById("settingsModal");
+const openBtn = document.getElementById("openSettings");
+const closeBtn = document.getElementById("closeSettings");
+
+openBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+  openBtn.style.transform = "rotate(20deg) scale(1.07)";
+});
+
+closeBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+  openBtn.style.transform = "";
+});
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
+    openBtn.style.transform = "";
+  }
+});
+
+const themeSwitcher = document.getElementById("themeSwitcher");
+const iconElements = {
+  login: document.getElementById("loginIcon"),
+  password: document.getElementById("passwordIcon"),
+  setupLogin: document.getElementById("setupLoginIcon"),
+  setupPassword: document.getElementById("setupPasswordIcon")
+};
+const mainImage = document.getElementById("mainImage");
+
+function updateTheme(theme) {
+  if (theme === "dark") document.body.classList.add("dark");
+  else document.body.classList.remove("dark");
+
+  document.querySelectorAll('img[data-light][data-dark]').forEach(img => {
+    img.src = theme === "dark" ? img.dataset.dark : img.dataset.light;
+  });
+
+  if (typeof iconElements !== 'undefined') {
+    iconElements.login.src = iconElements.login.dataset[theme];
+    iconElements.password.src = iconElements.password.dataset[theme];
+    iconElements.setupLogin.src = iconElements.setupLogin.dataset[theme];
+    iconElements.setupPassword.src = iconElements.setupPassword.dataset[theme];
+  }
+
+  setCookie("theme", theme);
+}
+
+themeSwitcher.addEventListener("change", () => updateTheme(themeSwitcher.value));
+
+const langSwitcher = document.getElementById("languageSwitcher");
+const translations = {
+  pl: {
+    title: "TeleMechanik Logowanie",
+    login: "Login",
+    password: "Hasło",
+    loginButton: "Zaloguj",
+    mastersetupTitle: "TeleMechanik Setup",
+    setupTitle: "Utwórz Pierwszego Admina",
+    setupLogin: "Login admina",
+    setupPassword: "Hasło admina",
+    setupButton: "Utwórz Pierwszego Admina",
+    settingsTitle: "Ustawienia",
+    langLabel: "Język",
+    themeLabel: "Motyw",
+    closeButton: "Zamknij",
+    capsWarning: "Caps Lock jest włączony",
+    errorLogin: "Błąd logowania",
+    successSetup: "Admin utworzony pomyślnie"
+  },
+  en: {
+    title: "TeleMechanik Login",
+    login: "Username",
+    password: "Password",
+    loginButton: "Log In",
+    mastersetupTitle: "TeleMechanik Setup",
+    setupTitle: "Create First Admin",
+    setupLogin: "Admin Username",
+    setupPassword: "Admin Password",
+    setupButton: "Create First Admin",
+    settingsTitle: "Settings",
+    langLabel: "Language",
+    themeLabel: "Theme",
+    closeButton: "Close",
+    capsWarning: "Caps Lock is on",
+    errorLogin: "Login error",
+    successSetup: "Admin created successfully"
+  }
+};
+
+function changeLanguage(lang) {
+  const t = translations[lang];
+  document.getElementById("title").textContent = t.title;
+  document.getElementById("loginPlaceholder").placeholder = t.login;
+  document.getElementById("passwordPlaceholder").placeholder = t.password;
+  document.getElementById("loginButton").textContent = t.loginButton;
+  document.getElementById("setupTitle").textContent = t.setupTitle;
+  document.getElementById("setupLoginPlaceholder").placeholder = t.setupLogin;
+  document.getElementById("setupPasswordPlaceholder").placeholder = t.setupPassword;
+  document.getElementById("setupButton").textContent = t.setupButton;
+
+  document.getElementById("settingsTitle").textContent = t.settingsTitle;
+  document.getElementById("langLabel").textContent = t.langLabel;
+  document.getElementById("themeLabel").textContent = t.themeLabel;
+  document.getElementById("closeSettings").textContent = t.closeButton;
+
+  document.getElementById("themeSwitcher").options[0].text = lang === "pl" ? "Jasny" : "Light";
+  document.getElementById("themeSwitcher").options[1].text = lang === "pl" ? "Ciemny" : "Dark";
+  
+  document.querySelectorAll('[id^="capsWarning-"]').forEach(warning => {
+    const textSpan = warning.querySelector('span:last-child');
+    if (textSpan) {
+      textSpan.textContent = t.capsWarning;
+    }
+  });
+
+  setCookie("language", lang);
+}
+
+langSwitcher.addEventListener("change", () => changeLanguage(langSwitcher.value));
+
+let currentLang = getCookie("language") || "pl";
+let currentTheme = getCookie("theme") || "light";
+
+langSwitcher.value = currentLang;
+themeSwitcher.value = currentTheme;
+
+updateTheme(currentTheme);
+changeLanguage(currentLang);
+
+const loginForm = document.getElementById('loginForm');
+const setupForm = document.getElementById('setupForm');
+const errorEl = document.getElementById('error');
+const messageEl = document.getElementById('message');
+
+document.querySelectorAll('.toggle-password').forEach(eye => {
+  eye.addEventListener('click', () => {
+    const wrapper = eye.parentElement;
+    const input = wrapper.querySelector('input');
+    if (input.type === "password") {
+      input.type = "text";
+      eye.src = "./obrazy/eye-closed.png";
+    } else {
+      input.type = "password";
+      eye.src = "./obrazy/eye.png";
+    }
+    setTimeout(() => {
+      updateAllCapsWarnings();
+    }, 10);
+  });
+});
+
+async function checkSetup() {
+  try {
+    const res = await fetch('/setup-status');
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const data = await res.json();
+
+    if (data.is_completed) {
+      loginForm.style.display = 'block';
+      document.title = translations[currentLang].title;
+    } else {
+      setupForm.style.display = 'block';
+      document.title = translations[currentLang].mastersetupTitle;
+    }
+  } catch (err) {
+    console.error(err);
+    errorEl.textContent = currentLang === "pl" ? "Błąd serwera!" : "Server Error!";
+  }
+}
+checkSetup();
+
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorEl.textContent = '';
+  const formData = new FormData(loginForm);
+  const data = { username: formData.get('username'), password: formData.get('password') };
+  try {
+    const res = await fetch('/login', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify(data) 
+    });
+    if (res.ok) {
+      window.location.href = '/dashboard';
+    } else {
+      const resultText = await res.text();
+      errorEl.textContent = resultText || translations[currentLang].errorLogin;
+    }
+  } catch (err) { 
+    console.error(err); 
+    errorEl.textContent = currentLang === "pl" ? "Błąd serwera!" : "Server Error!";
+  }
+});
+
+setupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorEl.textContent = '';
+  messageEl.textContent = '';
+  const formData = new FormData(setupForm);
+  const data = { username: formData.get('username'), password: formData.get('password') };
+  try {
+    const res = await fetch('/create-first-admin', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify(data) 
+    });
+    if (res.ok) {
+      messageEl.textContent = translations[currentLang].successSetup;
+      setupForm.style.display = 'none';
+      loginForm.style.display = 'block';
+    } else {
+      const resultText = await res.text();
+      errorEl.textContent = resultText || (currentLang === "pl" ? "Nie można utworzyć admina." : "Cannot create admin.");
+    }
+  } catch (err) { 
+    console.error(err); 
+    errorEl.textContent = currentLang === "pl" ? "Błąd serwera!" : "Server Error!";
+  }
+});
+
+ // ============================= CAPSLOCK ===========================
+ let globalCapsLockOn = false;
+
+document.addEventListener('keydown', function(e) {
+  if (e.getModifierState('CapsLock')) {
+    globalCapsLockOn = true;
+    updateAllCapsWarnings();
+  }
+});
+
+document.addEventListener('keyup', function(e) {
+  if (!e.getModifierState('CapsLock')) {
+    globalCapsLockOn = false;
+    updateAllCapsWarnings();
+  }
+});
+
+function updateAllCapsWarnings() {
+  document.querySelectorAll('[id^="capsWarning-"]').forEach(warning => {
+    const input = warning.parentElement.querySelector('input.password');
+    if (input && document.activeElement === input && 
+        globalCapsLockOn && input.type === 'password') {
+      warning.style.visibility = 'visible';
+      warning.style.opacity = '1';
+    } else {
+      warning.style.visibility = 'hidden';
+      warning.style.opacity = '0';
+    }
+  });
+}
+
+const passwordInputs = document.querySelectorAll('input.password');
+
+passwordInputs.forEach(input => {
+  const wrapper = input.parentElement;
+  
+  const capsWarning = document.createElement('div');
+  capsWarning.style.cssText = `
+    visibility: hidden;
+    opacity: 0;
+    background: var(--caps-warning-bg);
+    color: var(--caps-warning);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    margin: 6px 0 12px 0;
+    border-left: 3px solid var(--caps-warning);
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  `;
+  capsWarning.id = 'capsWarning-' + (input.id || Math.random());
+  
+  const warningIcon = document.createElement('span');
+  warningIcon.textContent = '⚠';
+  warningIcon.style.fontSize = '14px';
+  
+  const warningText = document.createElement('span');
+  warningText.textContent = translations[currentLang].capsWarning;
+  
+  capsWarning.appendChild(warningIcon);
+  capsWarning.appendChild(warningText);
+  
+  const toggleEye = wrapper.querySelector('.toggle-password');
+  if (toggleEye) {
+    toggleEye.addEventListener('click', function() {
+      setTimeout(() => {
+        updateAllCapsWarnings();
+      }, 10);
+    });
+  }
+  
+  input.addEventListener('focus', function() {
+    const event = new KeyboardEvent('keydown');
+    if (event.getModifierState && event.getModifierState('CapsLock')) {
+      globalCapsLockOn = true;
+    }
+    updateAllCapsWarnings();
+  });
+  
+  input.addEventListener('keyup', function(e) {
+    if (e.getModifierState('CapsLock')) {
+      globalCapsLockOn = true;
+    } else {
+      globalCapsLockOn = false;
+    }
+    updateAllCapsWarnings();
+  });
+  
+  input.addEventListener('blur', function() {
+    capsWarning.style.visibility = 'hidden';
+    capsWarning.style.opacity = '0';
+  });
+  
+  const form = input.closest('form');
+  if (form) {
+    const button = form.querySelector('button[type="submit"]');
+    if (button) {
+      button.parentNode.insertBefore(capsWarning, button);
+    }
+  }
+});
+
+window.addEventListener('load', function() {
+  const event = new KeyboardEvent('keydown');
+  if (event.getModifierState && event.getModifierState('CapsLock')) {
+    globalCapsLockOn = true;
+  }
+  
+  const activeElement = document.activeElement;
+  if (activeElement && activeElement.type === 'password') {
+    updateAllCapsWarnings();
+  }
+});
+</script>
+</body>
+</html>
