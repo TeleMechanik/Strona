@@ -204,6 +204,7 @@ Projekt edukacyjny — brak formalnej licencji. Wykorzystanie na własną odpowi
 
 ## 👤 Autor
 .creperowski. (Odpowiedzialny za cały panel)
+
 majster2nn (Odpowiedzialny za tylko websockety)
 
 Projekt zrealizowany w ramach praktyk szkolnych, jako forma zaliczenia praktyk zawodowych.
